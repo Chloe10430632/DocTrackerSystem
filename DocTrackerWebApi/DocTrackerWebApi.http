@@ -1,0 +1,6 @@
+@DocTrackerWebApi_HostAddress = http://localhost:5192
+
+GET {{DocTrackerWebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
