@@ -4,19 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] | DocTracker</title>
-    <!-- 網頁標籤icon -->
     <link rel="icon" href="~/favicon.ico">
-    <!-- 掛載 Tabler CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@tabler/core@1.4.0/dist/css/tabler.min.css" />
-    <!-- 掛載 Bootstrap 5 Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap" rel="stylesheet">
-    <!--Animate 動畫 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <!-- Layout的自訂樣式 -->
-    <link rel="stylesheet" href="~/css/layout.css">
+    <link rel="stylesheet" href="~/css/site.css">
     @RenderSection("Link", false)
     @RenderSection("Style", false)
 </head>
@@ -48,34 +41,38 @@
                         <!-- 閱讀文件 -->
                         <li class="nav-item mb-3">
                             <a class="nav-link me-3" asp-area="" asp-controller="Document" asp-action="Index">
-                                <i class="bi bi-person-fill-gear fs-1 fw-bold ps-3"></i>
+                                <i class="bi bi-journal-richtext fs-1 fw-bold ps-3"></i>
                                 <span class="ps-5 nav-link-title">閱讀文件</span>
                             </a>
                         </li>
 
-                        <!-- 查詢紀錄 -->
+                        @if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Admin")
+                        {
+                            <!-- 查詢紀錄 -->
                         <li class="nav-item mb-3">
-                            <a class="nav-link me-3" asp-area="" asp-controller="Document" asp-action="Index">
-                                <i class="bi bi-person-fill-gear fs-1 fw-bold ps-3"></i>
-                                <span class="ps-5 nav-link-title">閱讀文件</span>
+                            <a class="nav-link me-3" asp-area="" asp-controller="ReadingLog" asp-action="Index">
+                                <i class="bi bi-binoculars-fill fs-1 fw-bold ps-3"></i>
+                                <span class="ps-5 nav-link-title">查詢紀錄</span>
                             </a>
                         </li>
+                        }
+                        
 
                     </ul>
                 </div>
             </div>
         </aside>
+
+
         <!-- 右側主內容畫面 -->
         <div class="page-wrapper bg-gray-200">
-            <!-- 導覽列 -->
             <header class="navbar navbar-expand-md d-print-none py-2 bg-primary sticky-top bg-cyan" >
                 <div class="container">
+
                     <div class="row px-5">
                         <h2 class="text-white ms-5">文件閱讀系統</h2>
                     </div>
                     
-                    
-                    <!-- 目前登入者 -->
                     @if (User.FindFirst("UserId")?.Value != null)
                     {
                         <div class="navbar-nav flex-row order-md-last">
@@ -91,7 +88,14 @@
                                 <span class="avatar avatar-sm" style="background-image: url('@avatarUrl'); background-position: top center;"></span>
                                 <div class="d-none d-xl-block ps-2">
                                         <div class="text-white">@User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</div>
-                                    <div class="mt-1 small fs-4 text-white">@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</div>
+                                        @if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Admin")
+                                        {
+                                            <div class="mt-1 small fs-4 text-white">管理員</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="mt-1 small fs-4 text-white">一般使用者</div>
+                                        }
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -109,9 +113,11 @@
                         </div>
                     }
 
+
                 </div>
             </header>
-            <!-- 主要管理內容 -->
+
+            <!-- 主要內容 -->
             <div class="container-fluid">
                 <main role="main" class="pb-5">
                     @RenderBody()
@@ -124,17 +130,12 @@
 
 
 
-    <!-- 掛載 jQuery -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <!-- 掛載 Tabler JS -->
     <script src="https://cdn.jsdelivr.net/npm/@@tabler/core@1.4.0/dist/js/tabler.min.js"></script>
-    <!-- 掛載 Wow JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
-    <!-- 掛載 自訂js腳本 -->
-    <script src="/js/layout.js?v=1.1"></script>
+    @* <script src="/js/layout.js?v=1.1"></script> *@
 
 
-    @*@await RenderSectionAsync("Scripts", required: false) *@
-    @RenderSection("Scripts", false)
+    @await RenderSectionAsync("Scripts", required: false) 
+    @* @RenderSection("Scripts", false) *@
 </body>
 </html>

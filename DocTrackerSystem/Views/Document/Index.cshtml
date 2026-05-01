@@ -1,31 +1,44 @@
 ﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "閱讀文件";
 }
+
+@section Scripts {
+    <script src="@Url.Content("~/js/documents.js")" asp-append-version="true"></script>
+}
+
+
 <div class="container px-5 mt-5">
 
-    <div class="row px-5">
+    <div class="row px-5 justify-content-center">
 
-        <h1>2026年Q1洗錢防制稽核報告!</h1>
-        <h3>一、稽核目的</h3>
-        <p>驗證本公司對於《洗錢防制法》之遵循程度。</p>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>查核項目</th>
-                    <th>結果</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>KYC補件</td>
-                    <td>已完成</td>
-                </tr>
-            </tbody>
-        </table>
+        
+        <div class="col-lg-8">
+            <div class="card shadow p-4">
+                <div class="card-header bg-white py-3  d-flex align-items-center mb-2">
+                    <h5 class="mb-0 text-primary fw-bold fs-2 mb-2 lh-base" id="doc-title">閱讀文件</h5>
+                </div>
+
+                <div class="card-body" style="min-height: 250px;">
+                    <div id="doc-content" class="p-4 border rounded bg-light mb-4 text-secondary">
+                        <i class="bi bi-info-circle me-2"></i>
+                        請點擊「下一頁」開始查看第一份文件。
+                    </div>
+
+                    
+                </div>
+
+                <div class="card-footer bg-white py-3 text-end">
+                    <button id="btn-next" class="btn btn-primary px-4" data-next-id="0">
+                        下一頁 <i class="bi bi-arrow-right-short fs-2 ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
     </div>
-    
-
 </div>
+
 
 

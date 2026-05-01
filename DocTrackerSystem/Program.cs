@@ -52,9 +52,11 @@ builder.Services.AddHttpContextAccessor();
 //資料存取層
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
+builder.Services.AddScoped<IGenericRepository<Document>, GenericRepository<Document>>();
 
 //商業邏輯層
 builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 
 
