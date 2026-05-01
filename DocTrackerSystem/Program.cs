@@ -1,6 +1,7 @@
 using DocTrackerEFModels.EFModels;
 using DocTrackerService.IService;
 using DocTrackerService.Service;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// 啟用 Session (用來存 JWT，因為 Session 存伺服器端比較安全)
+builder.Services.AddSession();
+
+//  Cookie 驗證服務
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login/Login"; // 你的登入頁面路徑
+        options.AccessDeniedPath = "/Login/Denied";
+    });
+
 
 //開啟Http傳輸功能
 builder.Services.AddHttpContextAccessor();
@@ -45,9 +57,10 @@ builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 
 
+
 var app = builder.Build();
 
-
+app.UseSession();
 app.UseAuthentication(); 
 app.UseAuthorization();
 

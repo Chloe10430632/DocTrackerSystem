@@ -4,10 +4,76 @@
     ViewData["Title"] = "系統登入";
 }
 
-<form asp-action="Login" method="post">
-    <div asp-validation-summary="All"></div>
-    <input asp-for="Account" placeholder="帳號" />
-    <input asp-for="Password" placeholder="密碼" />
-    <button type="submit">登入</button>
-</form>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card card-md shadow-sm">
+                <div class="card-body">
+                    <h2 class="h2 text-center mb-4">系統登入</h2>
+
+                    <form asp-action="Login" method="post" autocomplete="off">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Account" class="form-label required">帳號</label>
+                            <input asp-for="Account" class="form-control form-control-lg mb-2" placeholder="請輸入您的帳號" />
+                            <span asp-validation-for="Account" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label required">密碼</label>
+                            <input asp-for="Password" class="form-control form-control-lg mb-2" placeholder="請輸入您的密碼" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-footer">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">立即登入</button>
+                        </div>
+                    </form>
+                    <div class="hr-text text-muted mb-5">快速測試登入</div>
+                    <div class="row g-2">
+                        <div class="col">
+                            <form asp-action="FastLogin" method="post" class="col">
+                                <input type="hidden" name="type" value="admin" />
+                                <button type="submit" class="btn btn-outline-info w-100">Admin</button>
+                            </form>
+                        </div>
+                        <div class="col">
+                            <form asp-action="FastLogin" method="post" class="col">
+                                <input type="hidden" name="type" value="chloe" />
+                                <button type="submit" class="btn btn-outline-success w-100">Chloe</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+@* <div class="container px-5 mt-5">
+
+    <div class="row px-5">
+
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="All"></div>
+            <input asp-for="Account" placeholder="帳號" />
+            <input asp-for="Password" placeholder="密碼" />
+            <button type="submit">登入</button>
+        </form>
+
+
+        </div>
+</div> *@
+
+
+
+
 

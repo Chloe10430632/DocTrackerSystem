@@ -1,7 +1,10 @@
 ﻿using DocTrackerEFModels.EFModels;
 using DocTrackerService.DTO;
 using DocTrackerService.IService;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +17,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AuthenticationProperties = Microsoft.AspNetCore.Authentication.AuthenticationProperties;
 
 
 
@@ -48,19 +52,27 @@ namespace DocTrackerService.Service
             // 2. 驗證密碼
             if (!BCrypt.Net.BCrypt.Verify(data.Password, user.PasswordHash)) return false;
 
-            // 3. 驗證成功，產生 JWT
+            // --- A. 處理 JWT (給 API 用的) ---
             var token = GenerateJwtToken(user);
+            // 把 JWT 存入 Session，之後呼叫 API 就從這裡拿
+            _httpContextAccessor.HttpContext.Session.SetString("ApiToken", token);
 
-            // 3. 設定 Cookie 的規則
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,                  
-                Secure = true,                  
-                SameSite = SameSiteMode.Strict,   
-                Expires = DateTime.UtcNow.AddHours(2) 
-            };
+            // --- B. 處理 MVC Cookie 驗證 (給頁面顯示使用者資訊用的) ---
+            var claims = new List<Claim> {
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Role, user.Role.RoleName),
+        new Claim("UserId", user.UserId.ToString()),
+        new Claim("Avatar", user.PictureUrl ?? "/imgs/peach.jpg")
+    };
 
-            _httpContextAccessor.HttpContext.Response.Cookies.Append("AuthToken", token, cookieOptions);
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties { IsPersistent = true };
+
+            // 這行執行後，你的 User.FindFirst 就有資料了
+            await _httpContextAccessor.HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties);
 
             return true;
         }
@@ -72,9 +84,10 @@ namespace DocTrackerService.Service
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[] {
-                new Claim(ClaimTypes.Name, user.Account),
+                new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Role, user.Role.RoleName), 
-                new Claim("UserId", user.UserId.ToString())
+                new Claim("UserId", user.UserId.ToString()),
+                new Claim("Avatar",user.PictureUrl)
             };
           
             var token = new JwtSecurityToken(

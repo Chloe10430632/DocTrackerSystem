@@ -1,0 +1,57 @@
+﻿@model IEnumerable<DocTrackerEFModels.EFModels.ReadingLog>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>閱讀紀錄查詢</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientIp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Doc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClientIp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Doc.DocId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.UserId)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

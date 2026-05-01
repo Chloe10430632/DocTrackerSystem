@@ -1,6 +1,9 @@
 ﻿using DocTrackerService.DTO;
 using DocTrackerService.IService;
 using DocTrackerSystem.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 
@@ -26,19 +29,64 @@ namespace DocTrackerSystem.Controllers
         public async Task<IActionResult> Login(LoginModel model)
         {
 
-            // 檢查模型驗證 (Required 等)
+           
             if (!ModelState.IsValid)
             {
-                return Json(new { success = false, message = "請填寫完整資訊" });
+                return View("Login", model);
             }
 
             // 驗證帳密
-            if (await _loginService.CheckAndLoginAsync(model))
+            if (!await _loginService.CheckAndLoginAsync(model))
             {
-                return Json(new { success = true, redirectUrl = Url.Action("Index", "Document") });
+                ModelState.AddModelError("", "帳號或密碼錯誤，請重新輸入。");
+                return View("Login", model);
             }
 
-            return Json(new { success = false, message = "帳號或密碼錯誤，請重新輸入。" });
+            return RedirectToAction("Index", "Document");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> FastLogin(string type)
+        {
+           
+            var testAccounts = new Dictionary<string, (string Account, string Password)>
+    {
+        { "admin", ("admin@yuanta.test.com", "Admin123456") },
+        { "chloe", ("chloe@yuanta.test.com", "Normal123456") }
+    };
+
+            if (!testAccounts.ContainsKey(type)) return BadRequest("無效的測試類型");
+
+            var (account, password) = testAccounts[type];
+            var model = new LoginModel { Account = account, Password = password };
+
+            // 直接複用你現有的登入服務
+            var success = await _loginService.CheckAndLoginAsync(model);
+
+            if (success)
+            {
+                return RedirectToAction("Index", "Document");
+            }
+
+            ModelState.AddModelError("", "快速登入失敗");
+            return View("Login");
+        }
+
+
+        public async Task<IActionResult> Logout()
+        {
+
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+
+            return RedirectToAction("Login");
+        }
+
+        [Authorize]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public IActionResult Denied()
+        {
+            return View();
         }
 
     }
