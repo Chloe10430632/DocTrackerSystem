@@ -28,8 +28,8 @@
                 </button>
                 <!-- Logo 圖片 -->
                 <div class="navbar-brand py-4 mx-auto">
-                    <a href="/Home/Index">
-                        <img src="~/imgs/salter-logo.svg" width="150px" alt="Salter Logo"
+                    <a href="">
+                        <img src="~/imgs/logo.png" width="150px" alt="Salter Logo"
                              style="position: relative; left: -13px;">
                     </a>
                 </div>
@@ -66,52 +66,63 @@
 
         <!-- 右側主內容畫面 -->
         <div class="page-wrapper bg-gray-200">
-            <header class="navbar navbar-expand-md d-print-none py-2 bg-primary sticky-top bg-cyan" >
+            <header class="navbar navbar-expand-md d-print-none py-2 bg-primary sticky-top bg-white shadow-sm" >
                 <div class="container">
 
-                    <div class="row px-5">
-                        <h2 class="text-white ms-5">文件閱讀系統</h2>
+                    <div class="row w-100 d-flex justify-content-between align-items-center px-5">
+
+                        <div class="col-8">
+                            <p class="text-secondary fs-2 mb-0">DocTrackerSystem</p>
+                        </div>
+
+                        <div class="col-2 d-flex justify-content-center">
+                            @if (User.FindFirst("UserId")?.Value != null)
+                            {
+                                <div class="navbar-nav flex-row order-md-last">
+                                    <div class="nav-item dropdown">
+                                        <a href="#" class="nav-link d-flex lh-1 text-reset" data-bs-toggle="dropdown"
+                                           aria-label="Open user menu">
+                                            @{
+                                                var userId = User.FindFirst("UserId")?.Value;
+                                                var avatarUrl = string.IsNullOrEmpty(userId)
+                                                ? Url.Content("~/imgs/peach.jpg")
+                                                : User.FindFirst("Avatar")?.Value;
+                                            }
+                                            <span class="avatar avatar-sm" style="background-image: url('@avatarUrl'); background-position: top center;"></span>
+                                            <div class="d-none d-xl-block ps-2">
+                                                <div class="text-secondary">@User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</div>
+                                                @if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Admin")
+                                                {
+                                                    <div class="mt-1 small fs-4 text-secondary">管理員</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="mt-1 small fs-4 text-secondary">一般使用者</div>
+                                                }
+                                            </div>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                            <a asp-area="" asp-controller="Login" asp-action="Logout" class="dropdown-item">登出</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="navbar-nav flex-row order-md-last">
+                                    <div class="nav-item dropdown">
+                                        <a asp-area="" asp-controller="Login" asp-action="Login" class="dropdown-item text-white">登入</a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+
+
+                        
                     </div>
                     
-                    @if (User.FindFirst("UserId")?.Value != null)
-                    {
-                        <div class="navbar-nav flex-row order-md-last">
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link d-flex lh-1 text-reset" data-bs-toggle="dropdown"
-                               aria-label="Open user menu">
-                                @{
-                                    var userId = User.FindFirst("UserId")?.Value;
-                                    var avatarUrl = string.IsNullOrEmpty(userId)
-                                    ? Url.Content("~/imgs/peach.jpg")
-                                    : User.FindFirst("Avatar")?.Value;
-                                }
-                                <span class="avatar avatar-sm" style="background-image: url('@avatarUrl'); background-position: top center;"></span>
-                                <div class="d-none d-xl-block ps-2">
-                                        <div class="text-white">@User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</div>
-                                        @if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Admin")
-                                        {
-                                            <div class="mt-1 small fs-4 text-white">管理員</div>
-                                        }
-                                        else
-                                        {
-                                            <div class="mt-1 small fs-4 text-white">一般使用者</div>
-                                        }
-                                </div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <a asp-area="" asp-controller="Login" asp-action="Logout" class="dropdown-item">登出</a>
-                            </div>
-                        </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="navbar-nav flex-row order-md-last">
-                            <div class="nav-item dropdown">
-                                    <a asp-area="" asp-controller="Login" asp-action="Login" class="dropdown-item text-white">登入</a>
-                            </div>
-                        </div>
-                    }
+                    
 
 
                 </div>
