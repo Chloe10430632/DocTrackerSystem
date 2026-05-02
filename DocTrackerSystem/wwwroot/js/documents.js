@@ -8,6 +8,10 @@ $(document).ready(function () {
         let nextId = currentId + 1;
         startTime = new Date();
 
+        if (currentId === 6) {
+            saveReadingLog(currentId, startTime.toISOString(), endTime.toISOString());
+        }
+
         if (nextId > 6) {
             alert("已經是最後一份文件了！");
             return;
