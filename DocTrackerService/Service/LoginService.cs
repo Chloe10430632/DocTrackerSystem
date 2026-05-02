@@ -42,20 +42,18 @@ namespace DocTrackerService.Service
 
         public async Task<bool> CheckAndLoginAsync(LoginModel data)
         {
-            // 1. 從 DB 找人
             var user = await _dbUsers
                 .GetAll()
                 .Include(u=>u.Role)
                 .FirstOrDefaultAsync(u => u.Account == data.Account);
             if (user == null) return false;
 
-            // 2. 驗證密碼
             if (!BCrypt.Net.BCrypt.Verify(data.Password, user.PasswordHash)) return false;
 
             // --- A. 處理 JWT (給 API 用的) ---
-            var token = GenerateJwtToken(user);
+            //var token = GenerateJwtToken(user);
             // 把 JWT 存入 Session，之後呼叫 API 就從這裡拿
-            _httpContextAccessor.HttpContext.Session.SetString("ApiToken", token);
+            //_httpContextAccessor.HttpContext.Session.SetString("ApiToken", token);
 
             // --- B. 處理 MVC Cookie 驗證 (給頁面顯示使用者資訊用的) ---
             var claims = new List<Claim> {

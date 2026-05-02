@@ -4,6 +4,7 @@ using DocTrackerService.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Repository.IRepository;
@@ -41,10 +42,15 @@ builder.Services.AddSession();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
+        options.Cookie.Name = "MySharedCookie";
+        options.Cookie.Path = "/";
+        options.Cookie.SameSite = SameSiteMode.Lax;
         options.LoginPath = "/Login/Login"; // 你的登入頁面路徑
         options.AccessDeniedPath = "/Login/Denied";
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     });
-
+builder.Services.AddDataProtection()
+    .SetApplicationName("MySharedApp");
 
 //開啟Http傳輸功能
 builder.Services.AddHttpContextAccessor();
@@ -57,8 +63,6 @@ builder.Services.AddScoped<IGenericRepository<Document>, GenericRepository<Docum
 //商業邏輯層
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
-
-
 
 var app = builder.Build();
 
@@ -103,7 +107,6 @@ using (var scope = app.Services.CreateScope())
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
