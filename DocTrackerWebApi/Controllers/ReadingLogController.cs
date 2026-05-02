@@ -23,13 +23,16 @@ namespace DocTrackerWebApi.Controllers
             _logsService = logsService;
         }
 
-
-
-        // GET: api/<ReadingLogController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [HttpGet("/api/readinglog/search")]
+        public async Task<ActionResult<IEnumerable<SearchReadingLogDto>>> Search([FromQuery] string? keyword)
         {
-            return new string[] { "value1", "value2" };
+            string claimRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (string.IsNullOrEmpty(claimRole) || claimRole != "Admin")
+            {
+                return Unauthorized(new { isSuccess = false, message = "權限不足無法瀏覽" });
+            }
+            var result = await _logsService.GetAllLogsAsync(keyword ?? "");
+            return Ok(result);
         }
 
         // GET api/<ReadingLogController>/5

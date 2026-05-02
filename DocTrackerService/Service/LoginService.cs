@@ -64,7 +64,7 @@ namespace DocTrackerService.Service
     };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties { IsPersistent = true };
+            var authProperties = new AuthenticationProperties { IsPersistent = true, ExpiresUtc = DateTime.UtcNow.AddMinutes(30) };
 
             // 這行執行後，你的 User.FindFirst 就有資料了
             await _httpContextAccessor.HttpContext.SignInAsync(

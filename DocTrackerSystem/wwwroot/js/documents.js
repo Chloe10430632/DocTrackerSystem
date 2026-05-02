@@ -1,18 +1,12 @@
 ﻿let startTime = new Date();
 $(document).ready(function () {
- 
     updateUI(1);
 
     $('#btn-next').on('click', function () {
         let endTime = new Date();
         let currentId = parseInt($(this).data('next-id'));
         let nextId = currentId + 1;
-        
-
-
-        // 重置 StartTime 為現在，準備計時下一份
         startTime = new Date();
-
 
         if (nextId > 6) {
             alert("已經是最後一份文件了！");
@@ -20,7 +14,6 @@ $(document).ready(function () {
         }
 
         saveReadingLog(currentId, startTime.toISOString(), endTime.toISOString());
-
         updateUI(nextId);
         $(this).data('next-id', nextId);
     });
@@ -48,9 +41,6 @@ $(document).ready(function () {
             endTime: endTime
         };
 
-        // 從 SessionStorage 或 Cookie 拿 Token (視你登入時存哪裡而定)
-        //const token = sessionStorage.getItem("ApiToken");
-
         $.ajax({
             url: 'https://localhost:7293/api/readinglog/create',
             type: 'POST',
@@ -67,6 +57,4 @@ $(document).ready(function () {
             }
         });
     }
-
-    
 });

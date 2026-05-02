@@ -9,6 +9,7 @@ namespace DocTrackerService.IService
 {
     public interface IReadingLogService
     {
+        public Task<IEnumerable<SearchReadingLogDto>> GetAllLogsAsync(string keyword);
         public Task<bool> CheckAndCreateAsync(int userId, string ip,CreateReadingLogDto dto);
     }
 }

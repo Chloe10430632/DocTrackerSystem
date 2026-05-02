@@ -14,29 +14,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DocTrackerDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DocTrackerDbContext")));
-
-//JWT 驗證服務
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-    });
-
-// 啟用 Session (用來存 JWT，因為 Session 存伺服器端比較安全)
-builder.Services.AddSession();
 
 //  Cookie 驗證服務
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -45,10 +25,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = "MySharedCookie";
         options.Cookie.Path = "/";
         options.Cookie.SameSite = SameSiteMode.Lax;
-        options.LoginPath = "/Login/Login"; // 你的登入頁面路徑
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.SlidingExpiration = true;
+        options.LoginPath = "/Login/Login"; 
         options.AccessDeniedPath = "/Login/Denied";
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     });
+
 builder.Services.AddDataProtection()
     .SetApplicationName("MySharedApp");
 
@@ -66,7 +49,7 @@ builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 var app = builder.Build();
 
-app.UseSession();
+app.UseRouting();
 app.UseAuthentication(); 
 app.UseAuthorization();
 
@@ -103,7 +86,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -112,13 +94,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Login}/{action=Login}/{id?}");
-
 app.Run();

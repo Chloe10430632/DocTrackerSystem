@@ -1,57 +1,57 @@
-﻿@model IEnumerable<DocTrackerEFModels.EFModels.ReadingLog>
-
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "查詢紀錄";
 }
 
-<h1>閱讀紀錄查詢</h1>
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.StartTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ClientIp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Doc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClientIp)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Doc.DocId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.UserId)
-            </td>
-        </tr>
+@section Scripts {
+    <script src="@Url.Content("~/js/logs.js")" asp-append-version="true"></script>
 }
-    </tbody>
-</table>
+<div class="container px-5 mt-5">
+
+    <div class="row px-5 justify-content-center">
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">閱讀紀錄查詢</h3>
+            </div>
+            <div class="card-body border-bottom py-3">
+                <div class="d-flex align-items-center">
+                    <div class="text-muted">
+                        <div class="ms-2">
+                            <input type="text" class="form-control form-control-sm px-4" id="searchInput" placeholder="搜尋文件標題/用戶名稱...">
+                        </div>
+                    </div>
+                    <div class=" ms-3 text-muted">
+                        <button class="btn btn-primary btn-sm" id="searchBtn">搜尋</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-wrap datatable">
+                    <thead>
+                        <tr>
+                            <th>Log ID</th>
+                            <th>用戶名稱</th>
+                            <th>文件標題</th>
+                            <th>開始時間</th>
+                            <th>結束時間</th>
+                            <th>建立時間</th>
+                            <th>客戶端 IP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logTableBody">
+                        <tr id="loadingRow" style="display: none;">
+                            <td colspan="7" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <div class="mt-2 text-muted">資料載入中...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
