@@ -58,10 +58,7 @@ namespace DocTrackerWebApi.Controllers
 
             //取得 Client IP
             string ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
-            using (var httpClient = new HttpClient())
-            {
-                 ip = await httpClient.GetStringAsync("https://api.ipify.org");
-            }
+            
 
             if(await _logsService.CheckAndCreateAsync(userId, ip, dto))
                 return Ok(new { isSuccess = true ,message = "紀錄寫入成功" });
