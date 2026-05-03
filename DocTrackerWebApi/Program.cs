@@ -36,9 +36,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             }
         };
         options.Cookie.Name = "MySharedCookie";
-        //options.Cookie.Domain = ".salter-ocean.online";
+        options.Cookie.Domain = ".salter-ocean.online";
         options.Cookie.Path = "/";
-        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SameSite = SameSiteMode.None;
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
         options.LoginPath = "/Login/Login";
