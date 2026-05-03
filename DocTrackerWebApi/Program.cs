@@ -36,9 +36,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             }
         };
         options.Cookie.Name = "MySharedCookie";
-        options.Cookie.Domain = ".salter-ocean.online";
+        //options.Cookie.Domain = ".salter-ocean.online";
         options.Cookie.Path = "/";
-        options.Cookie.SameSite = SameSiteMode.None;
+        options.Cookie.SameSite = SameSiteMode.Lax;
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
         options.LoginPath = "/Login/Login";
@@ -46,9 +46,20 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     });
 
+// 1. 設定金鑰要存放的路徑 (這裡會指向 Docker 容器內的 /app/DataKeys)
+// 注意：如果你在 Docker 裡，/app/DataKeys 是絕對路徑，不需要額外用 Path.Combine
+var keysDirectory = new DirectoryInfo("/app/DataKeys");
+
+// 2. 如果資料夾不存在，程式自動建立 (這能確保 Docker 啟動時不會報錯)
+if (!keysDirectory.Exists)
+{
+    keysDirectory.Create();
+}
+
+// 3. 設定 DataProtection
 builder.Services.AddDataProtection()
     .SetApplicationName("MySharedApp")
-    .PersistKeysToFileSystem(new DirectoryInfo(@"/root/.aspnet/DataProtection-Keys"));
+    .PersistKeysToFileSystem(keysDirectory);
 
 //資料存取層
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
