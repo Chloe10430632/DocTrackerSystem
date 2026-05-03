@@ -11,7 +11,7 @@ services:
         depends_on:
             - api-app
         volumes:
-            - ./data-protection/mvc:/root/.aspnet/DataProtection-Keys
+            - ./shared-keys:/app/DataKeys
 
     api-app:
         build:
@@ -22,4 +22,4 @@ services:
         environment:
             - ASPNETCORE_URLS=http://+:7293
         volumes:
-            - ./data-protection/api:/root/.aspnet/DataProtection-Keys
+            - ./shared-keys:/app/DataKeys
