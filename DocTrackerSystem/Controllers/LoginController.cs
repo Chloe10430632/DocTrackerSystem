@@ -1,4 +1,5 @@
 ﻿using DocTrackerService.DTO;
+using DocTrackerService.DTO.Const;
 using DocTrackerService.IService;
 using DocTrackerSystem.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -28,14 +29,11 @@ namespace DocTrackerSystem.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
         {
-
-           
             if (!ModelState.IsValid)
             {
                 return View("Login", model);
             }
 
-            // 驗證帳密
             if (!await _loginService.CheckAndLoginAsync(model))
             {
                 ModelState.AddModelError("", "帳號或密碼錯誤，請重新輸入。");
@@ -48,22 +46,18 @@ namespace DocTrackerSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> FastLogin(string type)
         {
-           
             var testAccounts = new Dictionary<string, (string Account, string Password)>
-    {
-        { "admin", ("admin@yuanta.test.com", "Admin123456") },
-        { "chloe", ("chloe@yuanta.test.com", "Normal123456") }
-    };
+                {
+                    { UserRoleTypes.Admin, ("admin@yuanta.test.com", "Admin123456") },
+                    { UserRoleTypes.NormalUser, ("chloe@yuanta.test.com", "Normal123456") }
+                };
 
             if (!testAccounts.ContainsKey(type)) return BadRequest("無效的測試類型");
 
             var (account, password) = testAccounts[type];
             var model = new LoginModel { Account = account, Password = password };
 
-            // 直接複用你現有的登入服務
-            var success = await _loginService.CheckAndLoginAsync(model);
-
-            if (success)
+            if (await _loginService.CheckAndLoginAsync(model))
             {
                 return RedirectToAction("Index", "Document");
             }
@@ -75,10 +69,7 @@ namespace DocTrackerSystem.Controllers
 
         public async Task<IActionResult> Logout()
         {
-
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-
             return RedirectToAction("Login");
         }
 

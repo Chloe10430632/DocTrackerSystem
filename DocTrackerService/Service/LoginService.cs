@@ -33,12 +33,11 @@ namespace DocTrackerService.Service
             IGenericRepository<User> dbUsers, 
             IConfiguration config,
             IHttpContextAccessor httpContextAccessor)
-        {
-            _dbUsers = dbUsers;
-            _config = config;
-            _httpContextAccessor = httpContextAccessor;
-        }
-
+            {
+                _dbUsers = dbUsers;
+                _config = config;
+                _httpContextAccessor = httpContextAccessor;
+            }
 
         public async Task<bool> CheckAndLoginAsync(LoginModel data)
         {
@@ -50,23 +49,17 @@ namespace DocTrackerService.Service
 
             if (!BCrypt.Net.BCrypt.Verify(data.Password, user.PasswordHash)) return false;
 
-            // --- A. 處理 JWT (給 API 用的) ---
-            //var token = GenerateJwtToken(user);
-            // 把 JWT 存入 Session，之後呼叫 API 就從這裡拿
-            //_httpContextAccessor.HttpContext.Session.SetString("ApiToken", token);
-
-            // --- B. 處理 MVC Cookie 驗證 (給頁面顯示使用者資訊用的) ---
-            var claims = new List<Claim> {
-        new Claim(ClaimTypes.Name, user.UserName),
-        new Claim(ClaimTypes.Role, user.Role.RoleName),
-        new Claim("UserId", user.UserId.ToString()),
-        new Claim("Avatar", user.PictureUrl ?? "/imgs/peach.jpg")
-    };
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, user.Role.RoleName),
+                new Claim("UserId", user.UserId.ToString()),
+                new Claim("Avatar", user.PictureUrl ?? "/imgs/peach.jpg")
+            };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties { IsPersistent = true, ExpiresUtc = DateTime.UtcNow.AddMinutes(30) };
 
-            // 這行執行後，你的 User.FindFirst 就有資料了
             await _httpContextAccessor.HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
@@ -75,28 +68,5 @@ namespace DocTrackerService.Service
             return true;
         }
 
-
-        private string GenerateJwtToken(User user)
-        {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[] {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Role, user.Role.RoleName), 
-                new Claim("UserId", user.UserId.ToString()),
-                new Claim("Avatar",user.PictureUrl)
-            };
-          
-            var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddHours(2),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
     }
 }

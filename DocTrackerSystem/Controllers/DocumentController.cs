@@ -10,14 +10,11 @@ namespace DocTrackerSystem.Controllers
     [ApiController]
     public class DocumentController : Controller
     {
-
         private readonly IDocumentService _docService;
-
         public DocumentController(IDocumentService docService)
         {
             _docService = docService;
         }
-
 
         [HttpGet("/Document/Index")]
         public IActionResult Index()
@@ -25,19 +22,13 @@ namespace DocTrackerSystem.Controllers
             return View();
         }
 
-
-
         [HttpGet("/api/document/{id}")]
         public async Task<ActionResult<DocumentModel>> GetDocument(int id)
         {
-
             var doc = await _docService.GetDocumentByID(id);
-
             if (doc == null) return NotFound();
-
             return Ok(doc);
         }
-
 
     }
 }

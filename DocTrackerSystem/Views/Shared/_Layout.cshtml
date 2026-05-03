@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using DocTrackerService.DTO.Const
+<!DOCTYPE html>
 <html lang="zh-hant-TW">
 <head>
     <meta charset="utf-8" />
@@ -19,25 +20,22 @@
     <div class="page">
         <aside class="navbar navbar-vertical navbar-expand-lg">
             <div class="container ">
-                <!-- 手機板menu漢堡按鈕 -->
                 <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
                         data-bs-target="#sidebar-menu" aria-controls="sidebar-menu" aria-expanded="false"
                         aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <!-- Logo 圖片 -->
+
                 <div class="navbar-brand py-4 mx-auto">
                     <a href="">
                         <img src="~/imgs/logo.png" width="150px" alt="Salter Logo"
                              style="position: relative; left: -13px;">
                     </a>
                 </div>
-                <!-- 選單按鈕 -->
+
                 <div class="collapse navbar-collapse" id="sidebar-menu">
                     <ul class="navbar-nav pt-3">
-
                         
-                        <!-- 閱讀文件 -->
                         <li class="nav-item mb-3">
                             <a class="nav-link me-3" asp-area="" asp-controller="Document" asp-action="Index">
                                 <i class="bi bi-journal-richtext fs-1 fw-bold ps-3"></i>
@@ -45,9 +43,8 @@
                             </a>
                         </li>
 
-                        @if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Admin")
+                        @if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == UserRoleTypes.Admin)
                         {
-                            <!-- 查詢紀錄 -->
                         <li class="nav-item mb-3">
                             <a class="nav-link me-3" asp-area="" asp-controller="ReadingLog" asp-action="Index">
                                 <i class="bi bi-binoculars-fill fs-1 fw-bold ps-3"></i>
@@ -55,13 +52,11 @@
                             </a>
                         </li>
                         }
-                        
 
                     </ul>
                 </div>
             </div>
         </aside>
-
 
         <div class="page-wrapper bg-gray-200">
             <header class="navbar navbar-expand-md d-print-none py-2 bg-primary sticky-top bg-white shadow-sm" >
@@ -114,37 +109,22 @@
                                 </div>
                             }
                         </div>
-
-
-
-                        
                     </div>
-                    
-                    
-
-
                 </div>
+
             </header>
 
-            <!-- 主要內容 -->
             <div class="container-fluid">
                 <main role="main" class="pb-5">
                     @RenderBody()
-                    @await RenderSectionAsync("UserListStyles", required: false)
                 </main>
             </div>
         </div>
     </div>
 
-
-
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@@tabler/core@1.4.0/dist/js/tabler.min.js"></script>
-    @* <script src="/js/layout.js?v=1.1"></script> *@
-
-
     @await RenderSectionAsync("Scripts", required: false) 
-    @* @RenderSection("Scripts", false) *@
+
 </body>
 </html>

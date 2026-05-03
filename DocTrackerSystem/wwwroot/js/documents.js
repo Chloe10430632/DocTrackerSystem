@@ -54,7 +54,7 @@ $(document).ready(function () {
             },
             data: JSON.stringify(data),
             success: function (response) {
-                console.log("紀錄已儲存");
+                //console.log("紀錄已儲存");
             },
             error: function (xhr) {
                 console.error("儲存失敗", xhr);

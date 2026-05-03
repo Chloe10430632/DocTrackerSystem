@@ -1,4 +1,5 @@
 ﻿@using DocTrackerService.DTO
+@using DocTrackerService.DTO.Const
 @model LoginModel
 @{
     ViewData["Title"] = "系統登入";
@@ -36,14 +37,14 @@
                     <div class="row g-2">
                         <div class="col">
                             <form asp-action="FastLogin" method="post" class="col">
-                                <input type="hidden" name="type" value="admin" />
-                                <button type="submit" class="btn btn-outline-info w-100">Admin</button>
+                                <input type="hidden" name="type" value="@UserRoleTypes.Admin" />
+                                <button type="submit" class="btn btn-outline-info w-100">管理員</button>
                             </form>
                         </div>
                         <div class="col">
                             <form asp-action="FastLogin" method="post" class="col">
-                                <input type="hidden" name="type" value="chloe" />
-                                <button type="submit" class="btn btn-outline-success w-100">Chloe</button>
+                                <input type="hidden" name="type" value="@UserRoleTypes.NormalUser" />
+                                <button type="submit" class="btn btn-outline-success w-100">一般使用者</button>
                             </form>
                         </div>
                     </div>
