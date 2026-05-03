@@ -56,9 +56,7 @@ namespace DocTrackerWebApi.Controllers
                 return Unauthorized(new { isSuccess = false, message = "身份驗證已過期或有誤" });
             }
 
-            //取得 Client IP
-            string ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
-            
+            string ip = GetClientIp(HttpContext);
 
             if(await _logsService.CheckAndCreateAsync(userId, ip, dto))
                 return Ok(new { isSuccess = true ,message = "紀錄寫入成功" });
@@ -67,6 +65,17 @@ namespace DocTrackerWebApi.Controllers
 
         }
 
-      
+        public string GetClientIp(HttpContext context)
+        {
+            var cfIp = context.Request.Headers["CF-Connecting-IP"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(cfIp)) return cfIp;
+
+            var forwardedIp = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(forwardedIp)) return forwardedIp.Split(',')[0].Trim();
+
+            return context.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "0.0.0.0";
+        }
+
+
     }
 }
