@@ -8,9 +8,10 @@ services:
             - "7209:7209"
         environment:
             - ASPNETCORE_URLS=http://+:7209
-            - ApiSettings__BaseUrl=http://localhost:7293 # 瀏覽器 Ajax 用
         depends_on:
             - api-app
+        volumes:
+            - ./data-protection/mvc:/root/.aspnet/DataProtection-Keys
 
     api-app:
         build:
@@ -20,3 +21,5 @@ services:
             - "7293:7293"
         environment:
             - ASPNETCORE_URLS=http://+:7293
+        volumes:
+            - ./data-protection/api:/root/.aspnet/DataProtection-Keys
