@@ -6,7 +6,6 @@ $(document).ready(function () {
         let endTime = new Date();
         let currentId = parseInt($(this).data('next-id'));
         let nextId = currentId + 1;
-        startTime = new Date();
 
         if (currentId === 6) {
             saveReadingLog(currentId, startTime.toISOString(), endTime.toISOString());
@@ -18,9 +17,12 @@ $(document).ready(function () {
         }
 
         saveReadingLog(currentId, startTime.toISOString(), endTime.toISOString());
+
+        startTime = new Date();
         updateUI(nextId);
         $(this).data('next-id', nextId);
     });
+
 
     function updateUI(id) {
         const apiUrl = `/api/document/${id}`;
