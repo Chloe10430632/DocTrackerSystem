@@ -46,7 +46,7 @@ $(document).ready(function () {
         };
 
         $.ajax({
-            url: 'https://localhost:7293/api/readinglog/create',
+            url: window.AppConfig.apiBaseUrl + '/api/readinglog/create',
             type: 'POST',
             contentType: 'application/json',
             xhrFields: {

@@ -9,7 +9,7 @@
 
 function fetchReadingLogs(keyword) {
     $.ajax({
-        url: 'https://localhost:7293/api/readinglog/search',
+        url: window.AppConfig.apiBaseUrl +'/api/readinglog/search',
         type: 'GET',
         xhrFields: {
             withCredentials: true

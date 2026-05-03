@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+    mvc-app:
+        build:
+            context: .
+            dockerfile: DocTrackerMVC.Dockerfile
+        ports:
+            - "7209:7209"
+        environment:
+            - ASPNETCORE_URLS=http://+:7209
+            - ApiSettings__BaseUrl=http://localhost:7293 # 瀏覽器 Ajax 用
+        depends_on:
+            - api-app
+
+    api-app:
+        build:
+            context: .
+            dockerfile: DocTrackerWebApi.Dockerfile
+        ports:
+            - "7293:7293"
+        environment:
+            - ASPNETCORE_URLS=http://+:7293
