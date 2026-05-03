@@ -34,7 +34,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddDataProtection()
-    .SetApplicationName("MySharedApp");
+    .SetApplicationName("MySharedApp")
+    .PersistKeysToFileSystem(new DirectoryInfo(@"/root/.aspnet/DataProtection-Keys"));
 
 //開啟Http傳輸功能
 builder.Services.AddHttpContextAccessor();

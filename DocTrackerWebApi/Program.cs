@@ -47,7 +47,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddDataProtection()
-    .SetApplicationName("MySharedApp");
+    .SetApplicationName("MySharedApp")
+    .PersistKeysToFileSystem(new DirectoryInfo(@"/root/.aspnet/DataProtection-Keys"));
 
 //資料存取層
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
